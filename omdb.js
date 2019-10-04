@@ -9,10 +9,17 @@ let omdb = function() {
         .then(function (response) {
             // handle success
             console.log(response);
-        })
+            var movieData = 
+                {
+                    terms: String,
+                    year: Number, // optional
+                    type: 'series' || 'movie' || 'episode' // optional
+                }
+              .join ("\n\n");
+            })
+        }
         .catch(function (error) {
             // handle error
             console.log(error);
         });
     };
-};
