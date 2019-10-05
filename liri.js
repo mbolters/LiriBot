@@ -10,68 +10,118 @@ let program = process.argv.slice(2)[0];
 
 
 let myArgs = process.argv.slice(3);
-let argString = "";
+let argString = myArgs[0];
 
-myArgs.forEach(function(arg){
-    argString = argString + arg + '%20';
-});
+if(myArgs.length > 1){
+    for (let i = 1; i < myArgs.length; i++) {
+        argString = argString  + '%20'+ myArgs[i];
+    }
+}
 
 switch(program) {
     
     
     case 'movie-this':
-        axios.get('http://www.omdbapi.com/?apikey=3089e91d&' + argString)
-        .then(response => {
-            console.log(response);
-        })
-        .catch(error => {
-            console.log(error);
-        });
+            movieThis(argString)
         break;
-
     
     case 'spotify-this-song' :
-        spotify
+            spotifyThisSong(argString)
+        break;
+        
+    case 'concert-this':
+            concertThis(argString)
+        break;
+
+    case 'do-what-it-says':
+            doWhatItSays();
+        break;
+
+default : 
+console.log("You messed up")
+}
+
+function movieThis(argString){
+    axios.get('http://www.omdbapi.com/?apikey=3089e91d&t=' + argString)
+    .then(function(movie) {
+        var movieData = [
+            "Title: " + movie.data.Title,
+            "Year: " + movie.data.Year,
+            "IMDB Rating: " + movie.data.imdbRating,
+            "RT Rating: "+ movie.data.Ratings[1],
+            "Country: "+ movie.data.Country,
+            "Language: "+ movie.data.Language,
+            "Plot: "+ movie.data.Plot,
+            "Actors: "+ movie.data.Actors,
+        ].join ("\n\n");
+        console.log(movieData);
+    })
+    .catch(error => {
+        console.log(error);
+    });
+}
+
+function spotifyThisSong(argString){
+    spotify
         .request('https://api.spotify.com/v1/search?q=' + argString +'&type=track&market=US')
-        .then(function(ids) {
-            console.log(ids.tracks.items[0].id);
-            
-            spotify
-            .request('https://api.spotify.com/v1/artists/' + ids + '/top-tracks?country=US')
-            .then(function(song) {
-                var trackData = [
-                    "Band: " +  song.tracks[0].album.artists[0].name,
-                    "Album: " + song.tracks[0].album.name,
-                    "Top Song: " + song.tracks[0].name,
-                    "Release Date: "+ song.tracks[0].album.release_date,
-                ].join ("\n\n");
-            // console.log(trackData);
+        .then(function(song) {
+            var trackData = [
+                "Artist: " +  song.tracks.items[0].artists[0].name,
+                "Song Name: " + song.tracks.items[0].name,
+                "Link: " + song.tracks.items[0].album.external_urls.spotify,
+                "Album: "+ song.tracks.items[0].album.name,
+            ].join ("\n\n");
+                console.log(trackData);
             })
             .catch(function(err) {
                 console.error('Error occurred: ' + err); 
             });
-        }) 
-        .catch(function(err) {
-            console.error('Error occurred: ' + err); 
-        });
-        break;
-        
-        
-    case 'concert-this':
+}
 
-        axios.get('https://rest.bandsintown.com/artists/' + argString + '/events?app_id=codingbootcamp')
-          .then(response => {
-            console.log(response);
+function concertThis(argString){
+    axios.get('https://rest.bandsintown.com/artists/' + argString + '/events?app_id=codingbootcamp')
+          .then(function(concert){
+            var moment = require('moment');
+            var time = (moment(concert.data[0].datetime).format('M/D/YYYY hh:mm A'));
+
+            var concertData = [
+                "Venue: " +  concert.data[0].venue.name,
+                "Address: " + concert.data[0].venue.city + ', ' + concert.data[0].venue.region,
+                "Date: " + time
+            ].join ("\n\n");
+            console.log(concertData);
+
           })
           .catch(error => {
             console.log(error);
           });
-        break;
-
-default : 
-console.log("You Fucked up")
 }
 
-
-
+function doWhatItSays(){
+    const fs = require("fs");
+    fs.readFile('random.txt', "utf8", function(error, data){
+        const lines = data.trim().split('\n');
+        for (const line of lines){
+            const numbers = line.split(", ");
+            switch(numbers[0]) {
+    
+    
+                case 'movie-this':
+                        movieThis(numbers[1])
+                    break;
+                
+                case 'spotify-this-song' :
+                        spotifyThisSong(numbers[1])
+                    break;
+                    
+                case 'concert-this':
+                        concertThis(numbers[1])
+                    break;
+            
+            default : 
+            console.log("You messed up")
+            }        
+        };
+    });
+}
 
