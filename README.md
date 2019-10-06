@@ -1,9 +1,9 @@
-#Liri Bot
+# Liri Bot
 
 * Built With: Node.js, Javascript, Moment.js, Axios, JSON
 * APIs: OMDB, Spotify, Bandsintown
 
-### Demo See a full demo here!
+### Demo - Download a full demo [here!](https://github.com/mbolters/LiriBot/blob/master/liribot.mov)
 
 ### Description & Requirements
 Liri is a command line application that takes user commands and queries from the command line and returns data from API's. The following commands have been hard coded into the program to give the user the capability to look up songs, concerts and movie information:
