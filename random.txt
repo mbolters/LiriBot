@@ -1,3 +1,3 @@
-spotify-this-song, "I Want it That Way"
-movie-this, "Bladerunner"
-concert-this, "Pink"
+spotify-this-song, I Want it That Way
+movie-this, Hook
+concert-this, Imagine Dragons

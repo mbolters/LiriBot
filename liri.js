@@ -5,10 +5,7 @@ let Spotify = require('node-spotify-api');
 let spotify = new Spotify(keys.spotify);
 
 const axios = require('axios');
-
 let program = process.argv.slice(2)[0];
-
-
 let myArgs = process.argv.slice(3);
 let argString = myArgs[0];
 
@@ -19,7 +16,6 @@ if(myArgs.length > 1){
 }
 
 switch(program) {
-    
     
     case 'movie-this':
             movieThis(argString)
@@ -38,7 +34,7 @@ switch(program) {
         break;
 
 default : 
-console.log("You messed up")
+console.log("node liri.js [movie-this, spotify-this-song, concert-this, do-what-it-says] [Option]")
 }
 
 function movieThis(argString){
@@ -48,13 +44,13 @@ function movieThis(argString){
             "Title: " + movie.data.Title,
             "Year: " + movie.data.Year,
             "IMDB Rating: " + movie.data.imdbRating,
-            "RT Rating: "+ movie.data.Ratings[1],
+            "RT Rating: "+ movie.data.Ratings[1].Value,
             "Country: "+ movie.data.Country,
             "Language: "+ movie.data.Language,
             "Plot: "+ movie.data.Plot,
             "Actors: "+ movie.data.Actors,
         ].join ("\n\n");
-        console.log(movieData);
+        console.log('----- movie-this ----- \n' +movieData + '\n');
     })
     .catch(error => {
         console.log(error);
@@ -71,7 +67,7 @@ function spotifyThisSong(argString){
                 "Link: " + song.tracks.items[0].album.external_urls.spotify,
                 "Album: "+ song.tracks.items[0].album.name,
             ].join ("\n\n");
-                console.log(trackData);
+                console.log('----- spotify-this-song ----- \n' +trackData + '\n');
             })
             .catch(function(err) {
                 console.error('Error occurred: ' + err); 
@@ -89,7 +85,7 @@ function concertThis(argString){
                 "Address: " + concert.data[0].venue.city + ', ' + concert.data[0].venue.region,
                 "Date: " + time
             ].join ("\n\n");
-            console.log(concertData);
+            console.log('----- concert-this ----- \n' +concertData + '\n');
 
           })
           .catch(error => {
@@ -101,26 +97,34 @@ function doWhatItSays(){
     const fs = require("fs");
     fs.readFile('random.txt', "utf8", function(error, data){
         const lines = data.trim().split('\n');
+
         for (const line of lines){
             const numbers = line.split(", ");
+            const args = numbers[1].split(" ");
+            let argString = args[0];
+
+            if(args.length > 1){
+                for (let i = 1; i < args.length; i++) {
+                    argString = argString  + '%20'+ args[i];
+                }
+            }
+
             switch(numbers[0]) {
-    
-    
                 case 'movie-this':
-                        movieThis(numbers[1])
+                        movieThis(argString)
                     break;
                 
                 case 'spotify-this-song' :
-                        spotifyThisSong(numbers[1])
+                        spotifyThisSong(argString)
                     break;
                     
                 case 'concert-this':
-                        concertThis(numbers[1])
+                        concertThis(argString)
                     break;
             
             default : 
-            console.log("You messed up")
-            }        
+            console.log(error);
+            }     
         };
     });
 }
