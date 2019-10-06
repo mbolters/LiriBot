@@ -36,25 +36,25 @@ Liri is a command line application that takes user commands and queries from the
 
 ### Functionality
 
-##### concert-this
+#### concert-this
 
 <command, artist name>
 
 Function takes the userInput (command) and the userQuery(artist), and returns the next concert time and date for that artist, as well as location and city.
 
-##### spotify-this
+#### spotify-this
 
 <command, song name>
 
 Function takes the userInput (command) and the userQuery(song), and returns the artist, full track name, a preview link and the album.
 
-##### movie-this 
+#### movie-this 
 
 <command, movie name>
 
 Function takes the userInput (command) and the userQuery(song), and returns title, cast, release date, ratings, country of origin, original language and synopsis. image of movieThis image of movie-this
 
-##### do-what-it-says
+#### do-what-it-says
 
 This function is a wildcard that will randomly select one of the functions and produce a search. The only way to find out what it does is to try!
 
